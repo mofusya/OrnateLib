@@ -1,10 +1,9 @@
-package net.mofusya.ornatelib.registries.tooset;
+package net.mofusya.ornatelib.registries.toolset;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -20,13 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ToolSet {
-    private final TagKey<Block> requiersThisTool;
+    private final TagKey<Block> requiresThisTool;
     private final Tier toolTier;
     private final ArrayList<RegistryObject<Item>> items = new ArrayList<>();
 
     public ToolSet(OrnateItemDeferredRegister register, String modId, String id, Builder build, int slot) {
-        this.requiersThisTool = BlockTags.create(new ResourceLocation(modId, "needs_" + id + "_tool"));
-        this.toolTier = TierSortingRegistry.registerTier(new ForgeTier(build.toolLevel, build.durability, build.digSpeed, 0f, build.enchantmentValue, this.requiersThisTool,
+        this.requiresThisTool = BlockTags.create(new ResourceLocation(modId, "needs_" + id + "_tool"));
+        this.toolTier = TierSortingRegistry.registerTier(new ForgeTier(build.toolLevel, build.durability, build.digSpeed, 0f, build.enchantmentValue, this.requiresThisTool,
                 () -> Ingredient.of(build.ingredient)), new ResourceLocation(modId, id), List.of(build.strongerThan), List.of());
         this.items.add(register.register(id + "_sword", new FixedSwordItem(this.toolTier, build.attackDamage, build.attackSpeed, build.property), slot));
         this.items.add(register.register(id + "_axe", new FixedAxeItem(this.toolTier, build.attackDamage, build.attackSpeed, build.property, true), slot));
@@ -37,6 +36,14 @@ public class ToolSet {
 
     public RegistryObject<Item> getItem(Type type) {
         return this.items.get(type.ordinal());
+    }
+
+    public TagKey<Block> getRequiresThisTool() {
+        return this.requiresThisTool;
+    }
+
+    public Tier getToolTier() {
+        return this.toolTier;
     }
 
     public enum Type {
