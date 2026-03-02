@@ -1,19 +1,12 @@
 package net.mofusya.ornatelib.registries.toolset;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.ForgeTier;
-import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.registries.RegistryObject;
-import net.mofusya.ornatelib.item.*;
-import net.mofusya.ornatelib.registries.OrnateItemDeferredRegister;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,17 +14,12 @@ import java.util.List;
 public class ToolSet {
     private final TagKey<Block> requiresThisTool;
     private final Tier toolTier;
-    private final ArrayList<RegistryObject<Item>> items = new ArrayList<>();
+    private final ArrayList<RegistryObject<Item>> items;
 
-    public ToolSet(OrnateItemDeferredRegister register, String modId, String id, Builder build, int slot) {
-        this.requiresThisTool = BlockTags.create(new ResourceLocation(modId, "needs_" + id + "_tool"));
-        this.toolTier = TierSortingRegistry.registerTier(new ForgeTier(build.toolLevel, build.durability, build.digSpeed, 0f, build.enchantmentValue, this.requiresThisTool,
-                () -> Ingredient.of(build.ingredient)), new ResourceLocation(modId, id), List.of(build.strongerThan), List.of());
-        this.items.add(register.register(id + "_sword", new FixedSwordItem(this.toolTier, build.attackDamage, build.attackSpeed, build.property), slot));
-        this.items.add(register.register(id + "_axe", new FixedAxeItem(this.toolTier, build.attackDamage, build.attackSpeed, build.property, true), slot));
-        this.items.add(register.register(id + "_pickaxe", new FixedPickaxeItem(this.toolTier, build.attackDamage, build.attackSpeed, build.property, true), slot));
-        this.items.add(register.register(id + "_shovel", new FixedShovelItem(this.toolTier, build.attackDamage, build.attackSpeed, build.property, true), slot));
-        this.items.add(register.register(id + "_hoe", new FixedHoeItem(this.toolTier, build.attackDamage, build.attackSpeed, build.property, true), slot));
+    public ToolSet(TagKey<Block> requiresThisTool, Tier toolTier, List<RegistryObject<Item>> items) {
+        this.requiresThisTool = requiresThisTool;
+        this.toolTier = toolTier;
+        this.items = new ArrayList<>(items);
     }
 
     public RegistryObject<Item> getItem(Type type) {
@@ -51,15 +39,15 @@ public class ToolSet {
     }
 
     public static class Builder {
-        private ItemLike ingredient;
-        private int attackDamage = 6;
-        private float attackSpeed = 1.2f;
-        private int toolLevel = 5;
-        private float digSpeed = 9f;
-        private int durability = 1024;
-        private int enchantmentValue = 30;
-        private Tier strongerThan = Tiers.NETHERITE;
-        private Item.Properties property = new Item.Properties();
+        public ItemLike ingredient;
+        public int attackDamage = 6;
+        public float attackSpeed = 1.2f;
+        public int toolLevel = 5;
+        public float digSpeed = 9f;
+        public int durability = 1024;
+        public int enchantmentValue = 30;
+        public Tier strongerThan = Tiers.NETHERITE;
+        public Item.Properties property = new Item.Properties();
 
         private Builder(ItemLike ingredient) {
             this.ingredient = ingredient;
@@ -100,7 +88,7 @@ public class ToolSet {
             return this;
         }
 
-        public Builder strongerThan(Tier strongerThan){
+        public Builder strongerThan(Tier strongerThan) {
             this.strongerThan = strongerThan;
             return this;
         }

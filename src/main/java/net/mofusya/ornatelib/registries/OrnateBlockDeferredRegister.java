@@ -1,6 +1,5 @@
 package net.mofusya.ornatelib.registries;
 
-import com.google.common.base.Supplier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -13,6 +12,7 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class OrnateBlockDeferredRegister {
 
@@ -27,80 +27,62 @@ public class OrnateBlockDeferredRegister {
     }
 
     public RegistryObject<Block> register(String id) {
-        return this.register(id, Block::new, new Item.Properties(), 0);
+        return this.register(id, Block::new, 0);
     }
 
-    public RegistryObject<Block> register(String id, Block block) {
-        return this.register(id, block, new Item.Properties(), 0);
-    }
-
-    public RegistryObject<Block> register(String id, Block block, int slot) {
-        return this.register(id, () -> block, new Item.Properties(), slot);
+    public RegistryObject<Block> register(String id, int slot) {
+        return this.register(id, Block::new, BlockBehaviour.Properties.of(), new Item.Properties(), slot);
     }
 
     public RegistryObject<Block> register(String id, Function<BlockBehaviour.Properties, Block> block) {
-        return this.register(id, block, new Item.Properties(), 0);
+        return this.register(id, block, 0);
     }
 
     public RegistryObject<Block> register(String id, Function<BlockBehaviour.Properties, Block> block, int slot) {
-        return this.register(id, block, new Item.Properties(), slot);
+        return this.register(id, block, BlockBehaviour.Properties.of(), new Item.Properties(), slot);
     }
 
-    public RegistryObject<Block> register(String id, Function<BlockBehaviour.Properties, Block> block, BlockBehaviour.Properties build) {
-        return this.register(id, block, build, new Item.Properties(), 0);
+    public RegistryObject<Block> register(String id, Function<BlockBehaviour.Properties, Block> block, Item.Properties itemBuild) {
+        return this.register(id, block, itemBuild, 0);
     }
 
-    public RegistryObject<Block> register(String id, Function<BlockBehaviour.Properties, Block> block, BlockBehaviour.Properties build, int slot) {
-        return this.register(id, block, build, new Item.Properties(), slot);
+    public RegistryObject<Block> register(String id, Function<BlockBehaviour.Properties, Block> block, Item.Properties itemBuild, int slot) {
+        return this.register(id, block, BlockBehaviour.Properties.of(), itemBuild, slot);
+    }
+
+    public RegistryObject<Block> register(String id, Function<BlockBehaviour.Properties, Block> block, BlockBehaviour.Properties blockBuild) {
+        return this.register(id, block, blockBuild, 0);
+    }
+
+    public RegistryObject<Block> register(String id, Function<BlockBehaviour.Properties, Block> block, BlockBehaviour.Properties blockBuild, int slot) {
+        return this.register(id, block, blockBuild, new Item.Properties(), slot);
+    }
+
+    public RegistryObject<Block> register(String id, Function<BlockBehaviour.Properties, Block> block, BlockBehaviour.Properties blockBuild, Item.Properties itemBuild) {
+        return this.register(id, block, blockBuild, itemBuild, 0);
+    }
+
+    public RegistryObject<Block> register(String id, Function<BlockBehaviour.Properties, Block> block, BlockBehaviour.Properties blockBuild, Item.Properties itemBuild, int slot) {
+        RegistryObject<Block> toReturn = this.blockRegisters.get(slot).register(id, () -> block.apply(blockBuild));
+        this.itemRegisters.register(id, () -> new BlockItem(toReturn.get(), itemBuild), slot);
+        return toReturn;
     }
 
     public RegistryObject<Block> register(String id, Supplier<Block> block) {
-        return this.register(id, block, new Item.Properties(), 0);
+        return this.register(id, block, new Item.Properties());
     }
 
     public RegistryObject<Block> register(String id, Supplier<Block> block, int slot) {
         return this.register(id, block, new Item.Properties(), slot);
     }
 
-    public RegistryObject<Block> register(String id, Item.Properties build) {
-        return this.register(id, Block::new, build, 0);
+    public RegistryObject<Block> register(String id, Supplier<Block> block, Item.Properties itemBuild) {
+        return this.register(id, block, itemBuild, 0);
     }
 
-    public RegistryObject<Block> register(String id, Block block, Item.Properties build) {
-        return this.register(id, block, build, 0);
-    }
-
-    public RegistryObject<Block> register(String id, Block block, Item.Properties build, int slot) {
-        return this.register(id, () -> block, build, slot);
-    }
-
-    public RegistryObject<Block> register(String id, Function<BlockBehaviour.Properties, Block> block, Item.Properties build) {
-        return this.register(id, block, build, 0);
-    }
-
-    public RegistryObject<Block> register(String id, Function<BlockBehaviour.Properties, Block> block, Item.Properties build, int slot) {
-        RegistryObject<Block> toReturn = this.blockRegisters.get(slot).register(id, () -> block.apply(BlockBehaviour.Properties.of()));
-        this.itemRegisters.register(id, new BlockItem(toReturn.get(), build), slot);
-        return toReturn;
-    }
-
-    public RegistryObject<Block> register(String id, Function<BlockBehaviour.Properties, Block> block, BlockBehaviour.Properties build, Item.Properties itemBuild) {
-        return this.register(id, block, build, itemBuild, 0);
-    }
-
-    public RegistryObject<Block> register(String id, Function<BlockBehaviour.Properties, Block> block, BlockBehaviour.Properties build, Item.Properties itemBuild, int slot) {
-        RegistryObject<Block> toReturn = this.blockRegisters.get(slot).register(id, () -> block.apply(build));
-        this.itemRegisters.register(id, new BlockItem(toReturn.get(), itemBuild), slot);
-        return toReturn;
-    }
-
-    public RegistryObject<Block> register(String id, Supplier<Block> block, Item.Properties build) {
-        return this.register(id, block, build, 0);
-    }
-
-    public RegistryObject<Block> register(String id, Supplier<Block> block, Item.Properties build, int slot) {
+    public RegistryObject<Block> register(String id, Supplier<Block> block, Item.Properties itemBuild, int slot) {
         RegistryObject<Block> toReturn = this.blockRegisters.get(slot).register(id, block);
-        this.itemRegisters.register(id, new BlockItem(toReturn.get(), build), slot);
+        this.itemRegisters.register(id, () -> new BlockItem(toReturn.get(), itemBuild), slot);
         return toReturn;
     }
 

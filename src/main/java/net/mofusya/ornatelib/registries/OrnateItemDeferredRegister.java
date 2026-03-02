@@ -1,11 +1,20 @@
 package net.mofusya.ornatelib.registries;
 
 import com.google.common.base.Supplier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
+import net.minecraftforge.common.ForgeTier;
+import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import net.mofusya.ornatelib.item.*;
 import net.mofusya.ornatelib.registries.toolset.ToolSet;
 
 import java.util.ArrayList;
@@ -27,14 +36,6 @@ public class OrnateItemDeferredRegister {
 
     public RegistryObject<Item> register(String id) {
         return this.register(id, Item::new, 0);
-    }
-
-    public RegistryObject<Item> register(String id, Item item) {
-        return this.register(id, item, 0);
-    }
-
-    public RegistryObject<Item> register(String id, Item item, int slot) {
-        return this.register(id, () -> item, slot);
     }
 
     public RegistryObject<Item> register(String id, Function<Item.Properties, Item> item) {
@@ -65,8 +66,19 @@ public class OrnateItemDeferredRegister {
         return this.register(id, toolsetBuilder, 0);
     }
 
-    public ToolSet register(String id, ToolSet.Builder toolsetBuilder, int slot) {
-        return new ToolSet(this, this.modId, id, toolsetBuilder, slot);
+    public ToolSet register(String id, ToolSet.Builder build, int slot) {
+        ArrayList<RegistryObject<Item>> items = new ArrayList<>();
+
+        TagKey<Block> requiresThisTool = BlockTags.create(new ResourceLocation(modId, "needs_" + id + "_tool"));
+        Tier toolTier = TierSortingRegistry.registerTier(new ForgeTier(build.toolLevel, build.durability, build.digSpeed, 0f, build.enchantmentValue, requiresThisTool,
+                () -> Ingredient.of(build.ingredient)), new ResourceLocation(modId, id), List.of(build.strongerThan), List.of());
+        items.add(this.register(id + "_sword", () -> new FixedSwordItem(toolTier, build.attackDamage, build.attackSpeed, build.property), slot));
+        items.add(this.register(id + "_axe", () -> new FixedAxeItem(toolTier, build.attackDamage, build.attackSpeed, build.property, true), slot));
+        items.add(this.register(id + "_pickaxe", () -> new FixedPickaxeItem(toolTier, build.attackDamage, build.attackSpeed, build.property, true), slot));
+        items.add(this.register(id + "_shovel", () -> new FixedShovelItem(toolTier, build.attackDamage, build.attackSpeed, build.property, true), slot));
+        items.add(this.register(id + "_hoe", () -> new FixedHoeItem(toolTier, build.attackDamage, build.attackSpeed, build.property, true), slot));
+
+        return new ToolSet(requiresThisTool, toolTier, items);
     }
 
     public void register(IEventBus eventBus) {
