@@ -2,10 +2,12 @@ package net.mofusya.ornatelib.registries;
 
 import com.google.common.base.Supplier;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import net.mofusya.ornatelib.registries.tooset.ToolSet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +16,11 @@ import java.util.function.Function;
 public class OrnateItemDeferredRegister {
 
     private final ArrayList<DeferredRegister<Item>> itemRegisters = new ArrayList<>();
+    private final String modId;
 
     private OrnateItemDeferredRegister(String modId, int itemRegisterSlotCount) {
+        this.modId = modId;
+
         for (int i = 0; i < itemRegisterSlotCount; i++) {
             this.itemRegisters.add(DeferredRegister.create(ForgeRegistries.ITEMS, modId));
         }
@@ -57,6 +62,14 @@ public class OrnateItemDeferredRegister {
         return this.itemRegisters.get(slot).register(id, item);
     }
 
+    public ToolSet register(String id, ToolSet.Builder toolsetBuilder) {
+        return this.register(id, toolsetBuilder, 0);
+    }
+
+    public ToolSet register(String id, ToolSet.Builder toolsetBuilder, int slot) {
+        return new ToolSet(this, this.modId, id, toolsetBuilder, slot);
+    }
+
     public void register(IEventBus eventBus) {
         this.itemRegisters.forEach(deferredRegister -> deferredRegister.register(eventBus));
     }
@@ -69,25 +82,25 @@ public class OrnateItemDeferredRegister {
         return this.itemRegisters.get(slot);
     }
 
-    public List<RegistryObject<Item>> getMainItems(){
+    public List<RegistryObject<Item>> getMainItems() {
         return this.getItems(0);
     }
 
-    public List<RegistryObject<Item>> getItems(){
+    public List<RegistryObject<Item>> getItems() {
         List<RegistryObject<Item>> toReturn = new ArrayList<>();
-        for (DeferredRegister<Item> register : this.itemRegisters){
+        for (DeferredRegister<Item> register : this.itemRegisters) {
             toReturn.addAll(register.getEntries());
         }
         return toReturn;
     }
 
-    public List<RegistryObject<Item>> getItems(int slot){
+    public List<RegistryObject<Item>> getItems(int slot) {
         return new ArrayList<>(this.getItemRegister(slot).getEntries());
     }
 
-    public List<RegistryObject<Item>> getItems(int... slots){
+    public List<RegistryObject<Item>> getItems(int... slots) {
         List<RegistryObject<Item>> toReturn = new ArrayList<>();
-        for (int slot : slots){
+        for (int slot : slots) {
             toReturn.addAll(this.getItemRegister(slot).getEntries());
         }
         return toReturn;
