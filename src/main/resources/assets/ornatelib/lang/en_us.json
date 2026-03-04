@@ -1,3 +1,8 @@
 {
-  "text.ornatelib.press_shift_2_show_description" : "§e<Shift>§r for more info"
+  "text.ornatelib.press_shift_2_show_description" : "§e<Shift>§r for more info",
+
+  "item.ornatelib.attributed_item": "Iron",
+  "item.ornatelib.attributed_item.density": "Density§8(g/cm³)",
+  "item.ornatelib.attributed_item.melting_point": "Melting Point§8(K)",
+  "item.ornatelib.attributed_item.boiling_point": "Boiling Point§8(K)"
 }

@@ -19,6 +19,7 @@ import net.mofusya.ornatelib.registries.toolset.ToolSet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class OrnateItemDeferredRegister {
@@ -34,6 +35,8 @@ public class OrnateItemDeferredRegister {
         }
     }
 
+
+    //  Item registering
     public RegistryObject<Item> register(String id) {
         return this.register(id, Item::new, 0);
     }
@@ -62,6 +65,32 @@ public class OrnateItemDeferredRegister {
         return this.itemRegisters.get(slot).register(id, item);
     }
 
+    //  Attributed item registering
+    public RegistryObject<Item> register(String id, AttributedItem.Builder builder) {
+        return this.register(id, builder, 0);
+    }
+
+    public RegistryObject<Item> register(String id, AttributedItem.Builder builder, int slot) {
+        return this.register(id, AttributedItem::new, builder, slot);
+    }
+
+    public RegistryObject<Item> register(String id, BiFunction<Item.Properties, AttributedItem.Builder, AttributedItem> item, AttributedItem.Builder builder) {
+        return this.register(id, item, builder, 0);
+    }
+
+    public RegistryObject<Item> register(String id, BiFunction<Item.Properties, AttributedItem.Builder, AttributedItem> item, AttributedItem.Builder builder, int slot) {
+        return this.register(id, item, new Item.Properties(), builder, slot);
+    }
+
+    public RegistryObject<Item> register(String id, BiFunction<Item.Properties, AttributedItem.Builder, AttributedItem> item, Item.Properties build, AttributedItem.Builder builder) {
+        return this.register(id, item, build, builder, 0);
+    }
+
+    public RegistryObject<Item> register(String id, BiFunction<Item.Properties, AttributedItem.Builder, AttributedItem> item, Item.Properties build, AttributedItem.Builder builder, int slot) {
+        return this.itemRegisters.get(slot).register(id, () -> item.apply(build, builder));
+    }
+
+    //  ToolSet registering
     public ToolSet register(String id, ToolSet.Builder toolsetBuilder) {
         return this.register(id, toolsetBuilder, 0);
     }
@@ -81,10 +110,12 @@ public class OrnateItemDeferredRegister {
         return new ToolSet(requiresThisTool, toolTier, items);
     }
 
+    //  Eventbus register
     public void register(IEventBus eventBus) {
         this.itemRegisters.forEach(deferredRegister -> deferredRegister.register(eventBus));
     }
 
+    //  Getter's and setter's
     public DeferredRegister<Item> getItemRegister() {
         return this.getItemRegister(0);
     }

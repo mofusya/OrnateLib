@@ -1,0 +1,153 @@
+package net.mofusya.ornatelib.item;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class AttributedItem extends Item {
+
+    private final Map<String, Integer> integerAttribute;
+    private final Map<String, Double> doubleAttribute;
+    private final Map<String, Float> floatAttribute;
+    private final Map<String, Boolean> booleanAttribute;
+    private final Map<String, String> stringAttribute;
+    private final Map<String, Object> strangeAttribute;
+    private final ArrayList<String> display;
+
+    public AttributedItem(Properties build, Builder builder) {
+        super(build);
+
+        this.integerAttribute = new HashMap<>(builder.integerAttribute);
+        this.doubleAttribute = new HashMap<>(builder.doubleAttribute);
+        this.floatAttribute = new HashMap<>(builder.floatAttribute);
+        this.booleanAttribute = new HashMap<>(builder.booleanAttribute);
+        this.stringAttribute = new HashMap<>(builder.stringAttribute);
+        this.strangeAttribute = new HashMap<>(builder.strangeAttribute);
+        this.display = new ArrayList<>(builder.display);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> component, TooltipFlag flag) {
+        super.appendHoverText(itemStack, level, component, flag);
+        for (String attribute : this.display){
+
+            String value = "";
+            if (this.integerAttribute.containsKey(attribute)){
+                value = String.valueOf(this.getIntegerAttribute(attribute));
+
+            } else if (this.doubleAttribute.containsKey(attribute)){
+                value = String.valueOf(this.getDoubleAttribute(attribute));
+
+            } else if (this.floatAttribute.containsKey(attribute)) {
+                value = String.valueOf(this.getFloatAttribute(attribute));
+
+            } else if (this.booleanAttribute.containsKey(attribute)) {
+                value = String.valueOf(this.getBooleanAttribute(attribute));
+
+            } else if (this.stringAttribute.containsKey(attribute)) {
+                value = this.getStringAttribute(attribute);
+
+            }
+
+            component.add(Component.translatable("item.ornatelib.attributed_item." + attribute).append(": ").append(Component.literal(value).withStyle(ChatFormatting.DARK_GRAY)));
+        }
+    }
+
+    public static class Builder {
+        private final Map<String, Integer> integerAttribute = new HashMap<>();
+        private final Map<String, Double> doubleAttribute = new HashMap<>();
+        private final Map<String, Float> floatAttribute = new HashMap<>();
+        private final Map<String, Boolean> booleanAttribute = new HashMap<>();
+        private final Map<String, String> stringAttribute = new HashMap<>();
+        private final Map<String, Object> strangeAttribute = new HashMap<>();
+        private final ArrayList<String> display = new ArrayList<>();
+
+        public Builder attribute(String string, int value) {
+            return this.attribute(string, value, false);
+        }
+
+        public Builder attribute(String string, int value, boolean display) {
+            if (display) this.display.add(string);
+            this.integerAttribute.put(string, value);
+            return this;
+        }
+
+        public Builder attribute(String string, double value) {
+            return this.attribute(string, value, false);
+        }
+
+        public Builder attribute(String string, double value, boolean display) {
+            if (display) this.display.add(string);
+            this.doubleAttribute.put(string, value);
+            return this;
+        }
+
+        public Builder attribute(String string, float value) {
+            return this.attribute(string, value, false);
+        }
+
+        public Builder attribute(String string, float value, boolean display) {
+            if (display) this.display.add(string);
+            this.floatAttribute.put(string, value);
+            return this;
+        }
+
+        public Builder attribute(String string, boolean value) {
+            return this.attribute(string, value, false);
+        }
+
+        public Builder attribute(String string, boolean value, boolean display) {
+            if (display) this.display.add(string);
+            this.booleanAttribute.put(string, value);
+            return this;
+        }
+
+        public Builder attribute(String string, String value) {
+            return this.attribute(string, value, false);
+        }
+
+        public Builder attribute(String string, String value, boolean display) {
+            if (display) this.display.add(string);
+            this.stringAttribute.put(string, value);
+            return this;
+        }
+
+        public Builder strangeAttribute(String string, Object value) {
+            this.strangeAttribute.put(string, value);
+            return this;
+        }
+    }
+
+    public int getIntegerAttribute(String attribute) {
+        return this.integerAttribute.get(attribute);
+    }
+
+    public double getDoubleAttribute(String attribute) {
+        return this.doubleAttribute.get(attribute);
+    }
+
+    public float getFloatAttribute(String attribute) {
+        return this.floatAttribute.get(attribute);
+    }
+
+    public boolean getBooleanAttribute(String attribute) {
+        return this.booleanAttribute.get(attribute);
+    }
+
+    public String getStringAttribute(String attribute) {
+        return this.stringAttribute.get(attribute);
+    }
+
+    public Object getStrangeAttribute(String attribute) {
+        return this.strangeAttribute.get(attribute);
+    }
+}
