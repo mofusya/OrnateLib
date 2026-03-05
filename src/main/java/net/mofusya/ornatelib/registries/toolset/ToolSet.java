@@ -39,17 +39,17 @@ public class ToolSet {
     }
 
     public static class Builder {
-        public ItemLike ingredient;
-        public int attackDamage = 6;
-        public float attackSpeed = 1.2f;
-        public int toolLevel = 5;
-        public float digSpeed = 9f;
-        public int durability = 1024;
-        public int enchantmentValue = 30;
-        public Tier strongerThan = Tiers.NETHERITE;
-        public Item.Properties property = new Item.Properties();
+        private ItemLike ingredient;
+        private int attackDamage = 6;
+        private float attackSpeed = 1.6f;
+        private int toolLevel = 5;
+        private float digSpeed = 9f;
+        private int durability = 1024;
+        private int enchantmentValue = 30;
+        private Tier strongerThan = Tiers.NETHERITE;
+        private Item.Properties property = new Item.Properties();
 
-        private Builder(ItemLike ingredient) {
+        public Builder(ItemLike ingredient) {
             this.ingredient = ingredient;
         }
 
@@ -98,8 +98,40 @@ public class ToolSet {
             return this;
         }
 
-        public static Builder create(ItemLike ingredient) {
-            return new Builder(ingredient);
+        public int getAttackDamage() {
+            return this.attackDamage;
+        }
+
+        public float getAttackSpeed() {
+            return this.attackSpeed;
+        }
+
+        public float getDigSpeed() {
+            return this.digSpeed;
+        }
+
+        public int getDurability() {
+            return this.durability;
+        }
+
+        public int getEnchantmentValue() {
+            return this.enchantmentValue;
+        }
+
+        public ItemLike getIngredient() {
+            return this.ingredient;
+        }
+
+        public Item.Properties getProperty() {
+            return this.property;
+        }
+
+        public Tier getStrongerThan() {
+            return this.strongerThan;
+        }
+
+        public int getToolLevel() {
+            return this.toolLevel;
         }
     }
 }

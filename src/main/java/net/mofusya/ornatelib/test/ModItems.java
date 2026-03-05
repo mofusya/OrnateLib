@@ -1,4 +1,4 @@
-package net.mofusya.ornatelib.items;
+package net.mofusya.ornatelib.test;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -13,7 +13,7 @@ public class ModItems {
     public static final OrnateItemDeferredRegister ITEMS = OrnateItemDeferredRegister.create(Ornatelib.MOD_ID);
 
     public static final RegistryObject<Item> ITEM = ITEMS.register("test_item", Item::new, new Item.Properties().rarity(Rarity.EPIC));
-    public static final ToolSet TEST = ITEMS.register("tool_set_test", ToolSet.Builder.create(Items.IRON_INGOT).property(new Item.Properties().rarity(Rarity.EPIC)));
+    public static final ToolSet TEST = ITEMS.register("tool_set_test",  new ToolSet.Builder(Items.IRON_INGOT).property(new Item.Properties().rarity(Rarity.EPIC)));
 
     public static final RegistryObject<Item> ATTRIBUTED_ITEM = ITEMS.register("attributed_item", new AttributedItem.Builder()
             .attribute("density", 7.874f, true)

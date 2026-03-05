@@ -3,7 +3,7 @@ package net.mofusya.ornatelib;
 import com.mojang.logging.LogUtils;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -13,10 +13,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import net.mofusya.ornatelib.items.ModItems;
+import net.mofusya.ornatelib.test.ModBlocks;
+import net.mofusya.ornatelib.test.ModItems;
 import org.slf4j.Logger;
-
-import java.util.function.Supplier;
 
 @Mod(Ornatelib.MOD_ID)
 public class Ornatelib {
@@ -28,6 +27,7 @@ public class Ornatelib {
         modEventBus.addListener(this::commonSetup);
 
         ModItems.ITEMS.register(modEventBus);
+        ModBlocks.BLOCKS.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
         modEventBus.addListener(this::addCreative);
@@ -42,6 +42,9 @@ public class Ornatelib {
         if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
             for (RegistryObject<Item> item : ModItems.ITEMS.getMainItems()){
                 event.accept(item);
+            }
+            for (RegistryObject<Block> block : ModBlocks.BLOCKS.getMainBlocks()){
+                event.accept(block);
             }
         }
     }

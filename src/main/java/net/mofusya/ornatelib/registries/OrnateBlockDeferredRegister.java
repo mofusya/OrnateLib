@@ -8,9 +8,12 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import net.mofusya.ornatelib.item.AttributedBlockItem;
+import net.mofusya.ornatelib.item.AttributedItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -26,54 +29,30 @@ public class OrnateBlockDeferredRegister {
         }
     }
 
-    public RegistryObject<Block> register(String id) {
-        return this.register(id, Block::new, 0);
+    //  Block registering
+    public RegistryObject<Block> register(String id, Builder builder) {
+        return this.register(id, builder, 0);
     }
 
-    public RegistryObject<Block> register(String id, int slot) {
-        return this.register(id, Block::new, BlockBehaviour.Properties.of(), new Item.Properties(), slot);
-    }
+    public RegistryObject<Block> register(String id, Builder builder, int slot) {
+        if (builder.block == null) {
+            if (builder.blockFunc == null) builder.blockFunc = Block::new;
+            if (builder.blockBuild == null)
+                builder.blockBuild = builder.blockBuildRef == null ? BlockBehaviour.Properties.of() : BlockBehaviour.Properties.copy(builder.blockBuildRef);
+            builder.block = () -> builder.blockFunc.apply(builder.blockBuild);
+        }
+        RegistryObject<Block> toReturn = this.blockRegisters.get(slot).register(id, builder.block);
 
-    public RegistryObject<Block> register(String id, Function<BlockBehaviour.Properties, Block> block) {
-        return this.register(id, block, 0);
-    }
+        if (builder.itemBuild == null) builder.itemBuild = new Item.Properties();
+        if (builder.attribute == null) {
+            if (builder.itemFunc == null) builder.itemFunc = BlockItem::new;
+        } else {
+            if (builder.itemFunc == null)
+                builder.itemFunc = (block, itemBuild) -> new AttributedBlockItem(block, itemBuild, builder.attribute);
+        }
+        this.itemRegisters.register(id, () -> builder.itemFunc.apply(toReturn.get(), builder.itemBuild), slot);
 
-    public RegistryObject<Block> register(String id, Function<BlockBehaviour.Properties, Block> block, int slot) {
-        return this.register(id, block, BlockBehaviour.Properties.of(), new Item.Properties(), slot);
-    }
-
-    public RegistryObject<Block> register(String id, Function<BlockBehaviour.Properties, Block> block, Item.Properties itemBuild) {
-        return this.register(id, block, itemBuild, 0);
-    }
-
-    public RegistryObject<Block> register(String id, Function<BlockBehaviour.Properties, Block> block, Item.Properties itemBuild, int slot) {
-        return this.register(id, block, BlockBehaviour.Properties.of(), itemBuild, slot);
-    }
-
-    public RegistryObject<Block> register(String id, Function<BlockBehaviour.Properties, Block> block, BlockBehaviour.Properties blockBuild) {
-        return this.register(id, block, blockBuild, 0);
-    }
-
-    public RegistryObject<Block> register(String id, Function<BlockBehaviour.Properties, Block> block, BlockBehaviour.Properties blockBuild, int slot) {
-        return this.register(id, block, blockBuild, new Item.Properties(), slot);
-    }
-
-    public RegistryObject<Block> register(String id, Function<BlockBehaviour.Properties, Block> block, BlockBehaviour.Properties blockBuild, Item.Properties itemBuild) {
-        return this.register(id, block, blockBuild, itemBuild, 0);
-    }
-
-    public RegistryObject<Block> register(String id, Function<BlockBehaviour.Properties, Block> block, BlockBehaviour.Properties blockBuild, Item.Properties itemBuild, int slot) {
-        RegistryObject<Block> toReturn = this.blockRegisters.get(slot).register(id, () -> block.apply(blockBuild));
-        this.itemRegisters.register(id, () -> new BlockItem(toReturn.get(), itemBuild), slot);
         return toReturn;
-    }
-
-    public RegistryObject<Block> register(String id, Supplier<Block> block) {
-        return this.register(id, block, new Item.Properties());
-    }
-
-    public RegistryObject<Block> register(String id, Supplier<Block> block, int slot) {
-        return this.register(id, block, new Item.Properties(), slot);
     }
 
     public RegistryObject<Block> register(String id, Supplier<Block> block, Item.Properties itemBuild) {
@@ -86,11 +65,13 @@ public class OrnateBlockDeferredRegister {
         return toReturn;
     }
 
+    //  Eventbus register
     public void register(IEventBus eventBus) {
         this.blockRegisters.forEach(deferredRegister -> deferredRegister.register(eventBus));
         this.itemRegisters.register(eventBus);
     }
 
+    //  Getter's and setter's
     public DeferredRegister<Item> getItemRegister() {
         return this.itemRegisters.getItemRegister();
     }
@@ -153,5 +134,50 @@ public class OrnateBlockDeferredRegister {
 
     public static OrnateBlockDeferredRegister create(String modId, int itemRegisterSlotCount) {
         return new OrnateBlockDeferredRegister(modId, itemRegisterSlotCount);
+    }
+
+    public static class Builder {
+        private Supplier<Block> block;
+        private Function<BlockBehaviour.Properties, Block> blockFunc;
+        private BiFunction<Block, Item.Properties, BlockItem> itemFunc;
+        private BlockBehaviour.Properties blockBuild;
+        private Block blockBuildRef;
+        private Item.Properties itemBuild;
+        private AttributedItem.Builder attribute;
+
+        public Builder block(Supplier<Block> block) {
+            this.block = block;
+            return this;
+        }
+
+        public Builder blockFunc(Function<BlockBehaviour.Properties, Block> blockFunc) {
+            this.blockFunc = blockFunc;
+            return this;
+        }
+
+        public Builder itemFunc(BiFunction<Block, Item.Properties, BlockItem> itemFunc) {
+            this.itemFunc = itemFunc;
+            return this;
+        }
+
+        public Builder blockBuild(BlockBehaviour.Properties blockBuild) {
+            this.blockBuild = blockBuild;
+            return this;
+        }
+
+        public Builder blockBuildRef(Block blockBuildRef) {
+            this.blockBuildRef = blockBuildRef;
+            return this;
+        }
+
+        public Builder itemBuild(Item.Properties itemBuild) {
+            this.itemBuild = itemBuild;
+            return this;
+        }
+
+        public Builder attribute(AttributedItem.Builder attribute) {
+            this.attribute = attribute;
+            return this;
+        }
     }
 }

@@ -99,13 +99,13 @@ public class OrnateItemDeferredRegister {
         ArrayList<RegistryObject<Item>> items = new ArrayList<>();
 
         TagKey<Block> requiresThisTool = BlockTags.create(new ResourceLocation(modId, "needs_" + id + "_tool"));
-        Tier toolTier = TierSortingRegistry.registerTier(new ForgeTier(build.toolLevel, build.durability, build.digSpeed, 0f, build.enchantmentValue, requiresThisTool,
-                () -> Ingredient.of(build.ingredient)), new ResourceLocation(modId, id), List.of(build.strongerThan), List.of());
-        items.add(this.register(id + "_sword", () -> new FixedSwordItem(toolTier, build.attackDamage, build.attackSpeed, build.property), slot));
-        items.add(this.register(id + "_axe", () -> new FixedAxeItem(toolTier, build.attackDamage, build.attackSpeed, build.property, true), slot));
-        items.add(this.register(id + "_pickaxe", () -> new FixedPickaxeItem(toolTier, build.attackDamage, build.attackSpeed, build.property, true), slot));
-        items.add(this.register(id + "_shovel", () -> new FixedShovelItem(toolTier, build.attackDamage, build.attackSpeed, build.property, true), slot));
-        items.add(this.register(id + "_hoe", () -> new FixedHoeItem(toolTier, build.attackDamage, build.attackSpeed, build.property, true), slot));
+        Tier toolTier = TierSortingRegistry.registerTier(new ForgeTier(build.getToolLevel(), build.getDurability(), build.getDigSpeed(), 0f, build.getEnchantmentValue(), requiresThisTool,
+                () -> Ingredient.of(build.getIngredient())), new ResourceLocation(modId, id), List.of(build.getStrongerThan()), List.of());
+        items.add(this.register(id + "_sword", () -> new FixedSwordItem(toolTier, build.getAttackDamage(), build.getAttackSpeed(), build.getProperty()), slot));
+        items.add(this.register(id + "_axe", () -> new FixedAxeItem(toolTier, build.getAttackDamage(), build.getAttackSpeed(), build.getProperty(), true), slot));
+        items.add(this.register(id + "_pickaxe", () -> new FixedPickaxeItem(toolTier, build.getAttackDamage(), build.getAttackSpeed(), build.getProperty(), true), slot));
+        items.add(this.register(id + "_shovel", () -> new FixedShovelItem(toolTier, build.getAttackDamage(), build.getAttackSpeed(), build.getProperty(), true), slot));
+        items.add(this.register(id + "_hoe", () -> new FixedHoeItem(toolTier, build.getAttackDamage(), build.getAttackSpeed(), build.getProperty(), true), slot));
 
         return new ToolSet(requiresThisTool, toolTier, items);
     }

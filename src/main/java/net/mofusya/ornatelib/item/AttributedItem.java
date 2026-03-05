@@ -63,13 +63,13 @@ public class AttributedItem extends Item {
     }
 
     public static class Builder {
-        private final Map<String, Integer> integerAttribute = new HashMap<>();
-        private final Map<String, Double> doubleAttribute = new HashMap<>();
-        private final Map<String, Float> floatAttribute = new HashMap<>();
-        private final Map<String, Boolean> booleanAttribute = new HashMap<>();
-        private final Map<String, String> stringAttribute = new HashMap<>();
-        private final Map<String, Object> strangeAttribute = new HashMap<>();
-        private final ArrayList<String> display = new ArrayList<>();
+        public final Map<String, Integer> integerAttribute = new HashMap<>();
+        public final Map<String, Double> doubleAttribute = new HashMap<>();
+        public final Map<String, Float> floatAttribute = new HashMap<>();
+        public final Map<String, Boolean> booleanAttribute = new HashMap<>();
+        public final Map<String, String> stringAttribute = new HashMap<>();
+        public final Map<String, Object> strangeAttribute = new HashMap<>();
+        public final ArrayList<String> display = new ArrayList<>();
 
         public Builder attribute(String string, int value) {
             return this.attribute(string, value, false);
@@ -124,6 +124,18 @@ public class AttributedItem extends Item {
         public Builder strangeAttribute(String string, Object value) {
             this.strangeAttribute.put(string, value);
             return this;
+        }
+
+        public Builder copy(){
+            Builder toReturn = new Builder();
+            toReturn.integerAttribute.putAll(this.integerAttribute);
+            toReturn.doubleAttribute.putAll(this.doubleAttribute);
+            toReturn.floatAttribute.putAll(this.floatAttribute);
+            toReturn.booleanAttribute.putAll(this.booleanAttribute);
+            toReturn.stringAttribute.putAll(this.stringAttribute);
+            toReturn.strangeAttribute.putAll(this.strangeAttribute);
+            toReturn.display.addAll(this.display);
+            return toReturn;
         }
     }
 
