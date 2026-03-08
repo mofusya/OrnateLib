@@ -20,6 +20,7 @@ public class Ornatelib {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
 
+
         MinecraftForge.EVENT_BUS.register(this);
         modEventBus.addListener(this::addCreative);
     }
@@ -34,9 +35,6 @@ public class Ornatelib {
         if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
             for (RegistryObject<Item> item : ModItems.ITEMS.getMainItems()){
                 event.accept(item);
-            }
-            for (RegistryObject<Block> block : ModBlocks.BLOCKS.getMainBlocks()){
-                event.accept(block);
             }
         }
          */

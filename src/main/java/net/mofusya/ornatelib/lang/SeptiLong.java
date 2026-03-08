@@ -381,13 +381,13 @@ public final class SeptiLong {
     }
 
     public SeptiLong copy() {
-        return new SeptiLong(this.value[0], this.value[1], this.value[2], this.value[3], this.value[4]);
+        return new SeptiLong(this.value[0], this.value[1], this.value[2], this.value[3], this.value[4], this.value[5], this.value[6]);
     }
 
     @Override
     public String toString() {
         StringBuilder toReturn = new StringBuilder();
-        String[] layers = {"", "", "", "", "", ""};
+        String[] layers = {"", "", "", "", "", "", ""};
 
         if (this.value[0] != 0) {
             layers[0] = toString(this.value[0]);
