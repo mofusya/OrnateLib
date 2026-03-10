@@ -15,13 +15,13 @@ import java.util.List;
 import java.util.Map;
 
 public class AttributedBlockItem extends BlockItem {
-    private final Map<String, Integer> integerAttribute;
-    private final Map<String, Double> doubleAttribute;
-    private final Map<String, Float> floatAttribute;
-    private final Map<String, Boolean> booleanAttribute;
-    private final Map<String, String> stringAttribute;
-    private final Map<String, Object> strangeAttribute;
-    private final ArrayList<String> display;
+    protected final Map<String, Integer> integerAttribute;
+    protected final Map<String, Double> doubleAttribute;
+    protected final Map<String, Float> floatAttribute;
+    protected final Map<String, Boolean> booleanAttribute;
+    protected final Map<String, String> stringAttribute;
+    protected final Map<String, Object> strangeAttribute;
+    protected final ArrayList<String> display;
 
     public AttributedBlockItem(Block block, Properties build, AttributedItem.Builder builder) {
         super(block, build);
