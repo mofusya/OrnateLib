@@ -2,10 +2,12 @@ package net.mofusya.ornatelib.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -38,13 +40,13 @@ public class AttributedItem extends Item {
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> component, TooltipFlag flag) {
         super.appendHoverText(itemStack, level, component, flag);
-        for (String attribute : this.display){
+        for (String attribute : this.display) {
 
             String value = "";
-            if (this.integerAttribute.containsKey(attribute)){
+            if (this.integerAttribute.containsKey(attribute)) {
                 value = String.valueOf(this.getIntegerAttribute(attribute));
 
-            } else if (this.doubleAttribute.containsKey(attribute)){
+            } else if (this.doubleAttribute.containsKey(attribute)) {
                 value = String.valueOf(this.getDoubleAttribute(attribute));
 
             } else if (this.floatAttribute.containsKey(attribute)) {
@@ -58,7 +60,7 @@ public class AttributedItem extends Item {
 
             }
 
-            component.add(Component.translatable("item.ornatelib.attributed_item." + attribute).append(": ").append(Component.literal(value).withStyle(ChatFormatting.DARK_GRAY)));
+            component.add(Component.translatable("item." + this.getModId() + ".attributed_item." + attribute).append(": ").append(Component.literal(value).withStyle(ChatFormatting.DARK_GRAY)));
         }
     }
 
@@ -126,7 +128,7 @@ public class AttributedItem extends Item {
             return this;
         }
 
-        public Builder copy(){
+        public Builder copy() {
             Builder toReturn = new Builder();
             toReturn.integerAttribute.putAll(this.integerAttribute);
             toReturn.doubleAttribute.putAll(this.doubleAttribute);
@@ -161,5 +163,13 @@ public class AttributedItem extends Item {
 
     public Object getStrangeAttribute(String attribute) {
         return this.strangeAttribute.get(attribute);
+    }
+
+    protected String getModId() {
+        ResourceLocation id = ForgeRegistries.ITEMS.getKey(this);
+        if (id != null) {
+            return id.getNamespace();
+        }
+        return null;
     }
 }
