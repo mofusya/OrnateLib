@@ -31,12 +31,5 @@ public class Ornatelib {
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        /*
-        if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
-            for (RegistryObject<Item> item : ModItems.ITEMS.getMainItems()){
-                event.accept(item);
-            }
-        }
-         */
     }
 }
