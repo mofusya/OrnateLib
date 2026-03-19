@@ -2,11 +2,13 @@ package net.mofusya.ornatelib.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -58,7 +60,7 @@ public class AttributedBlockItem extends BlockItem {
 
             }
 
-            component.add(Component.translatable("item.ornatelib.attributed_item." + attribute).append(": ").append(Component.literal(value).withStyle(ChatFormatting.DARK_GRAY)));
+            component.add(Component.translatable("item." + this.getModId() + ".attributed_item." + attribute).append(": ").append(Component.literal(value).withStyle(ChatFormatting.DARK_GRAY)));
         }
     }
 
@@ -84,5 +86,13 @@ public class AttributedBlockItem extends BlockItem {
 
     public Object getStrangeAttribute(String attribute) {
         return this.strangeAttribute.get(attribute);
+    }
+
+    protected String getModId() {
+        ResourceLocation id = ForgeRegistries.ITEMS.getKey(this);
+        if (id != null) {
+            return id.getNamespace();
+        }
+        return null;
     }
 }
