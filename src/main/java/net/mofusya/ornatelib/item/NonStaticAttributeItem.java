@@ -4,21 +4,41 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
-public class NonStaticAttributeItem extends AttributedItem {
-    public NonStaticAttributeItem(Properties build, Builder builder) {
-        super(build, builder);
+public class NonStaticAttributeItem extends Item {
+    protected final Map<String, Integer> integerAttribute;
+    protected final Map<String, Double> doubleAttribute;
+    protected final Map<String, Float> floatAttribute;
+    protected final Map<String, Boolean> booleanAttribute;
+    protected final Map<String, String> stringAttribute;
+    protected final Map<String, Object> strangeAttribute;
+    protected final ArrayList<String> display;
+
+    public NonStaticAttributeItem(Properties build, AttributedItem.Builder builder) {
+        super(build);
+
+        this.integerAttribute = new HashMap<>(builder.integerAttribute);
+        this.doubleAttribute = new HashMap<>(builder.doubleAttribute);
+        this.floatAttribute = new HashMap<>(builder.floatAttribute);
+        this.booleanAttribute = new HashMap<>(builder.booleanAttribute);
+        this.stringAttribute = new HashMap<>(builder.stringAttribute);
+        this.strangeAttribute = new HashMap<>(builder.strangeAttribute);
+        this.display = new ArrayList<>(builder.display);
     }
 
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> component, TooltipFlag flag) {
+        super.appendHoverText(itemStack, level, component, flag);
+
         String attribute;
         String value;
         for (Iterator<String> var5 = this.display.iterator(); var5.hasNext(); component.add(Component.translatable("item." + this.getModId() + ".attributed_item." + attribute).append(": ").append(Component.literal(value).withStyle(ChatFormatting.DARK_GRAY)))) {
@@ -39,27 +59,27 @@ public class NonStaticAttributeItem extends AttributedItem {
     }
 
     public int getIntegerAttribute(ItemStack itemStack, String attribute) {
-        return itemStack.getOrCreateTag().getCompound(this.getModId()).contains(attribute) ? itemStack.getOrCreateTag().getCompound(this.getModId()).getInt(attribute) : super.getIntegerAttribute(attribute);
+        return itemStack.getOrCreateTag().getCompound(this.getModId()).contains(attribute) ? itemStack.getOrCreateTag().getCompound(this.getModId()).getInt(attribute) : this.getIntegerAttribute(attribute);
     }
 
     public double getDoubleAttribute(ItemStack itemStack, String attribute) {
-        return itemStack.getOrCreateTag().getCompound(this.getModId()).contains(attribute) ? itemStack.getOrCreateTag().getCompound(this.getModId()).getDouble(attribute) : super.getDoubleAttribute(attribute);
+        return itemStack.getOrCreateTag().getCompound(this.getModId()).contains(attribute) ? itemStack.getOrCreateTag().getCompound(this.getModId()).getDouble(attribute) : this.getDoubleAttribute(attribute);
     }
 
     public float getFloatAttribute(ItemStack itemStack, String attribute) {
-        return itemStack.getOrCreateTag().getCompound(this.getModId()).contains(attribute) ? itemStack.getOrCreateTag().getCompound(this.getModId()).getFloat(attribute) : super.getFloatAttribute(attribute);
+        return itemStack.getOrCreateTag().getCompound(this.getModId()).contains(attribute) ? itemStack.getOrCreateTag().getCompound(this.getModId()).getFloat(attribute) : this.getFloatAttribute(attribute);
     }
 
     public boolean getBooleanAttribute(ItemStack itemStack, String attribute) {
-        return itemStack.getOrCreateTag().getCompound(this.getModId()).contains(attribute) ? itemStack.getOrCreateTag().getCompound(this.getModId()).getBoolean(attribute) : super.getBooleanAttribute(attribute);
+        return itemStack.getOrCreateTag().getCompound(this.getModId()).contains(attribute) ? itemStack.getOrCreateTag().getCompound(this.getModId()).getBoolean(attribute) : this.getBooleanAttribute(attribute);
     }
 
     public String getStringAttribute(ItemStack itemStack, String attribute) {
-        return itemStack.getOrCreateTag().getCompound(this.getModId()).contains(attribute) ? itemStack.getOrCreateTag().getCompound(this.getModId()).getString(attribute) : super.getStringAttribute(attribute);
+        return itemStack.getOrCreateTag().getCompound(this.getModId()).contains(attribute) ? itemStack.getOrCreateTag().getCompound(this.getModId()).getString(attribute) : this.getStringAttribute(attribute);
     }
 
     public Tag getStrangeAttribute(ItemStack itemStack, String attribute) {
-        return itemStack.getOrCreateTag().getCompound(this.getModId()).contains(attribute) ? itemStack.getOrCreateTag().getCompound(this.getModId()).get(attribute) : super.getStrangeAttribute(attribute) instanceof Tag tag ? tag : itemStack.getOrCreateTag().getCompound(this.getModId()).get(attribute);
+        return itemStack.getOrCreateTag().getCompound(this.getModId()).contains(attribute) ? itemStack.getOrCreateTag().getCompound(this.getModId()).get(attribute) : this.getStrangeAttribute(attribute) instanceof Tag tag ? tag : itemStack.getOrCreateTag().getCompound(this.getModId()).get(attribute);
     }
 
     public ItemStack setAttribute(ItemStack itemStack, String attribute, int value) {
@@ -114,5 +134,37 @@ public class NonStaticAttributeItem extends AttributedItem {
             itemStack.getOrCreateTag().put(this.getModId(), tag);
         }
         return itemStack;
+    }
+
+    protected int getIntegerAttribute(String attribute) {
+        return this.integerAttribute.get(attribute);
+    }
+
+    protected double getDoubleAttribute(String attribute) {
+        return this.doubleAttribute.get(attribute);
+    }
+
+    protected float getFloatAttribute(String attribute) {
+        return this.floatAttribute.get(attribute);
+    }
+
+    protected boolean getBooleanAttribute(String attribute) {
+        return this.booleanAttribute.get(attribute);
+    }
+
+    protected String getStringAttribute(String attribute) {
+        return this.stringAttribute.get(attribute);
+    }
+
+    protected Object getStrangeAttribute(String attribute) {
+        return this.strangeAttribute.get(attribute);
+    }
+
+    protected String getModId() {
+        ResourceLocation id = ForgeRegistries.ITEMS.getKey(this);
+        if (id != null) {
+            return id.getNamespace();
+        }
+        return null;
     }
 }
