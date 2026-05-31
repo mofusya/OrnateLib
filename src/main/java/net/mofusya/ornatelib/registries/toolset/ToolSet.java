@@ -10,6 +10,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class ToolSet {
     private final TagKey<Block> requiresThisTool;
@@ -39,7 +40,7 @@ public class ToolSet {
     }
 
     public static class Builder {
-        private ItemLike ingredient;
+        private Supplier<ItemLike> ingredient;
         private int attackDamage = 6;
         private float attackSpeed = 1.6f;
         private int toolLevel = 5;
@@ -49,11 +50,11 @@ public class ToolSet {
         private Tier strongerThan = Tiers.NETHERITE;
         private Item.Properties property = new Item.Properties();
 
-        public Builder(ItemLike ingredient) {
+        public Builder(Supplier<ItemLike> ingredient) {
             this.ingredient = ingredient;
         }
 
-        public Builder ingredient(ItemLike ingredient) {
+        public Builder ingredient(Supplier<ItemLike> ingredient) {
             this.ingredient = ingredient;
             return this;
         }
@@ -119,7 +120,7 @@ public class ToolSet {
         }
 
         public ItemLike getIngredient() {
-            return this.ingredient;
+            return this.ingredient.get();
         }
 
         public Item.Properties getProperty() {
