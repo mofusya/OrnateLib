@@ -7,6 +7,9 @@ import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.RegistryObject;
+import net.mofusya.ornatelib.item.*;
+import net.mofusya.ornatelib.util.function.QuadFunction;
+import net.mofusya.ornatelib.util.function.QuintFunction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +52,11 @@ public class ToolSet {
         private int enchantmentValue = 30;
         private Tier strongerThan = Tiers.NETHERITE;
         private Item.Properties property = new Item.Properties();
+        private QuadFunction<Tier, Integer, Float, Item.Properties, FixedSwordItem> swordFunc = FixedSwordItem::new;
+        private QuintFunction<Tier, Integer, Float, Item.Properties, Boolean, FixedAxeItem> axeFunc = FixedAxeItem::new;
+        private QuintFunction<Tier, Integer, Float, Item.Properties, Boolean, FixedPickaxeItem> pickaxeFunc = FixedPickaxeItem::new;
+        private QuintFunction<Tier, Integer, Float, Item.Properties, Boolean, FixedShovelItem> shovelFunc = FixedShovelItem::new;
+        private QuintFunction<Tier, Integer, Float, Item.Properties, Boolean, FixedHoeItem> hoeFunc = FixedHoeItem::new;
 
         public Builder(Supplier<ItemLike> ingredient) {
             this.ingredient = ingredient;
@@ -99,6 +107,31 @@ public class ToolSet {
             return this;
         }
 
+        public Builder swordFunc(QuadFunction<Tier, Integer, Float, Item.Properties, FixedSwordItem> swordFunc) {
+            this.swordFunc = swordFunc;
+            return this;
+        }
+
+        public Builder axeFunc(QuintFunction<Tier, Integer, Float, Item.Properties, Boolean, FixedAxeItem> axeFunc) {
+            this.axeFunc = axeFunc;
+            return this;
+        }
+
+        public Builder pickaxeFunc(QuintFunction<Tier, Integer, Float, Item.Properties, Boolean, FixedPickaxeItem> pickaxeFunc) {
+            this.pickaxeFunc = pickaxeFunc;
+            return this;
+        }
+
+        public Builder shovelFunc(QuintFunction<Tier, Integer, Float, Item.Properties, Boolean, FixedShovelItem> shovelFunc) {
+            this.shovelFunc = shovelFunc;
+            return this;
+        }
+
+        public Builder hoeFunc(QuintFunction<Tier, Integer, Float, Item.Properties, Boolean, FixedHoeItem> hoeFunc) {
+            this.hoeFunc = hoeFunc;
+            return this;
+        }
+
         public int getAttackDamage() {
             return this.attackDamage;
         }
@@ -133,6 +166,26 @@ public class ToolSet {
 
         public int getToolLevel() {
             return this.toolLevel;
+        }
+
+        public FixedSwordItem getSwordItem(Tier tier, int attackDamage, float attackSpeed, Item.Properties build) {
+            return this.swordFunc.apply(tier, attackDamage, attackSpeed, build);
+        }
+
+        public FixedAxeItem getAxeItem(Tier tier, int attackDamage, float attackSpeed, Item.Properties build, boolean fixToSword) {
+            return this.axeFunc.apply(tier, attackDamage, attackSpeed, build, fixToSword);
+        }
+
+        public FixedPickaxeItem getPickaxeItem(Tier tier, int attackDamage, float attackSpeed, Item.Properties build, boolean fixToSword) {
+            return this.pickaxeFunc.apply(tier, attackDamage, attackSpeed, build, fixToSword);
+        }
+
+        public FixedShovelItem getShovelItem(Tier tier, int attackDamage, float attackSpeed, Item.Properties build, boolean fixToSword) {
+            return this.shovelFunc.apply(tier, attackDamage, attackSpeed, build, fixToSword);
+        }
+
+        public FixedHoeItem getHoeItem(Tier tier, int attackDamage, float attackSpeed, Item.Properties build, boolean fixToSword) {
+            return this.hoeFunc.apply(tier, attackDamage, attackSpeed, build, fixToSword);
         }
     }
 }
