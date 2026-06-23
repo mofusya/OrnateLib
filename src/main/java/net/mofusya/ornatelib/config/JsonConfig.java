@@ -22,9 +22,13 @@ public class JsonConfig {
     }
 
     public JsonConfig(String fileName, Supplier<JsonObject> config) {
+        this(fileName, config.get());
+    }
+
+    public JsonConfig(String fileName, JsonObject config) {
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         this.path = FMLPaths.CONFIGDIR.get().resolve(fileName + ".json");
-        this.config = config.get();
+        this.config = config;
     }
 
     public JsonObject get(){
