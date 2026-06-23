@@ -10,6 +10,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.function.Supplier;
 
 public class JsonConfig {
     private final Gson gson;
@@ -17,13 +18,13 @@ public class JsonConfig {
     private JsonObject config;
 
     public JsonConfig(String fileName) {
-        this(fileName, new JsonObject());
+        this(fileName, JsonObject::new);
     }
 
-    public JsonConfig(String fileName, JsonObject config) {
+    public JsonConfig(String fileName, Supplier<JsonObject> config) {
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         this.path = FMLPaths.CONFIGDIR.get().resolve(fileName + ".json");
-        this.config = config;
+        this.config = config.get();
     }
 
     public JsonObject get(){

@@ -3,6 +3,8 @@ package net.mofusya.ornatelib.lang;
 import com.electronwill.nightconfig.core.conversion.InvalidValueException;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public final class SeptiLong {
 
     private static final long V0_MAX_VALUE = Long.MAX_VALUE;
@@ -434,6 +436,17 @@ public final class SeptiLong {
 
         for (int i = 0; i < LAYER_SIZE; i++) {
             toReturn.setLayer(i, layers[i]);
+        }
+        return toReturn;
+    }
+
+    public static SeptiLong createFromList(List<Long> layers) {
+        SeptiLong toReturn = new SeptiLong();
+
+        if (layers == null || layers.size() > LAYER_SIZE) return toReturn;
+
+        for (int i = 0; i < LAYER_SIZE; i++) {
+            toReturn.setLayer(i, layers.get(i));
         }
         return toReturn;
     }
