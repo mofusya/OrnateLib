@@ -163,6 +163,7 @@ dependencies {
     implementation fg.deobf("curse.maven:mekanism-tools-268567:6552915")
     implementation fg.deobf("curse.maven:mekanism-generators-268566:6552914")
     implementation fg.deobf("curse.maven:mekanism-additions-345425:6552913")
+    implementation fg.deobf("curse.maven:mekanism-weapons-929829:6949839")
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 

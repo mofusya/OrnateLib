@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.mofusya.ornatelib.lang.UnLong;
 import org.slf4j.Logger;
 
 @Mod(Ornatelib.MOD_ID)
@@ -22,14 +23,15 @@ public class Ornatelib {
 
 
         MinecraftForge.EVENT_BUS.register(this);
-        modEventBus.addListener(this::addCreative);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
+        UnLong unLong = new UnLong(10, 60);
+
+        LOGGER.info(unLong.toString());
+        LOGGER.info(unLong.multi(new UnLong(0)).toString());
+
         LOGGER.info("HELLO FROM COMMON SETUP");
         LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
-    }
-
-    private void addCreative(BuildCreativeModeTabContentsEvent event) {
     }
 }

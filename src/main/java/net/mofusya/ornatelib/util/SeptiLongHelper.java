@@ -1,8 +1,8 @@
 package net.mofusya.ornatelib.util;
 
 import net.minecraft.nbt.CompoundTag;
-import net.mofusya.ornatelib.lang.SeptiLong;
-import net.mofusya.ornatelib.lang.SeptiLongValue;
+import net.mofusya.ornatelib.legacy.lang.SeptiLong;
+import net.mofusya.ornatelib.legacy.lang.SeptiLongValue;
 
 public class SeptiLongHelper {
 

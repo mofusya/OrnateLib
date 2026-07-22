@@ -1,8 +1,9 @@
-package net.mofusya.ornatelib.lang;
+package net.mofusya.ornatelib.legacy.lang;
 
 import com.electronwill.nightconfig.core.conversion.InvalidValueException;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigInteger;
 import java.util.List;
 
 public final class SeptiLong {
@@ -145,12 +146,23 @@ public final class SeptiLong {
         return this.divideAndGetFloat(new SeptiLong(l));
     }
 
-    public SeptiLong multiply(float multiplier){
-        if (multiplier <= 1f || multiplier > V0_MAX_VALUE) return this;
+    public SeptiLong multiplyWithDouble(double multiplier){
+        if (multiplier <= 1 || multiplier > V0_MAX_VALUE) return this;
 
         for (int i = 0; i < this.value.length; i++) {
             if (this.value[i] > 0){
-                this.multiplyLayer(i, multiplier);
+                this.multiplyLayerWithDouble(i, multiplier);
+            }
+        }
+        return this;
+    }
+
+    public SeptiLong multiply(SeptiLong multiplier){
+        if (multiplier.isSmallerOrSameThan(1) || multiplier.isGreaterThan(V0_MAX_VALUE)) return this;
+
+        for (int i = 0; i < this.value.length; i++) {
+            if (this.value[i] > 0){
+                this.multiplyLayer(i, multiplier.getLayer(i));
             }
         }
         return this;
@@ -202,7 +214,7 @@ public final class SeptiLong {
             if (added > V1_V6_MAX_VALUE) {
                 added -= V1_V6_MAX_VALUE + 1;
 
-                if (this.addLayer(layer - 1)) return false;
+                if (!this.addLayer(layer - 1)) return false;
             }
             this.value[layer] = added;
         }
@@ -240,7 +252,7 @@ public final class SeptiLong {
                     this.value[layer] = 0;
                     return false;
                 }
-                removed += (V1_V6_MAX_VALUE + 1) / 10;
+                removed += (V1_V6_MAX_VALUE + 1);
             }
         }
 
@@ -271,7 +283,7 @@ public final class SeptiLong {
             if (divided >= 1) {
                 this.value[layer] = (long) divided;
             } else {
-                long modDivided = (long) (divided * ((float) (V1_V6_MAX_VALUE + 1) / 10));
+                long modDivided = (long) (divided * ((float) (V1_V6_MAX_VALUE + 1)));
                 this.addLayer(layer + 1, modDivided);
             }
         }
@@ -305,14 +317,14 @@ public final class SeptiLong {
         return this.divideLayerAndGetFloat(layer, new SeptiLong(divide));
     }
 
-    public void multiplyLayer(int layer, float multiplier){
+    public void multiplyLayerWithDouble(int layer, double multiplier){
         if (multiplier <= 1f || multiplier > V0_MAX_VALUE) return;
 
         if (layer > this.value.length - 1 || layer < 0) {
             throw new InvalidValueException("layer has to be in between " + 0 + " and " + (this.value.length - 1) + ". That value is invalid.");
         }
 
-        float value = this.value[layer] * multiplier;
+        double value = this.value[layer] * multiplier;
 
         if (layer == 0){
             if (value > V0_MAX_VALUE) value = V0_MAX_VALUE;
@@ -324,6 +336,27 @@ public final class SeptiLong {
             }
         }
         this.value[layer] = (long) value;
+    }
+
+    public void multiplyLayer(int layer, long multiplier){
+        if (multiplier <= 1f) return;
+
+        if (layer > this.value.length - 1 || layer < 0) {
+            throw new InvalidValueException("layer has to be in between " + 0 + " and " + (this.value.length - 1) + ". That value is invalid.");
+        }
+
+        BigInteger value = BigInteger.valueOf(this.value[layer]).multiply(BigInteger.valueOf(multiplier));
+
+        if (layer == 0){
+            if (value.compareTo(BigInteger.valueOf(V0_MAX_VALUE)) > 0) value = BigInteger.valueOf(V0_MAX_VALUE);
+        } else {
+            if (value.compareTo(BigInteger.valueOf(V1_V6_MAX_VALUE)) > 0){
+                long upperValue = value.divide(BigInteger.valueOf(V1_V6_MAX_VALUE + 1)).longValue();
+                this.addLayer(layer - 1, upperValue);
+                value.min(BigInteger.valueOf(upperValue * (V1_V6_MAX_VALUE + 1)));
+            }
+        }
+        this.value[layer] = value.longValue();
     }
 
     public boolean is(@NotNull SeptiLong septiLong) {

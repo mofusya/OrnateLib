@@ -1,4 +1,4 @@
-package net.mofusya.ornatelib.lang;
+package net.mofusya.ornatelib.legacy.lang;
 
 public enum SeptiLongValue {
     ZERO(new SeptiLong()),

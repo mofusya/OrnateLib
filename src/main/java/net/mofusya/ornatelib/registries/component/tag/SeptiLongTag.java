@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import net.minecraft.world.item.ItemStack;
-import net.mofusya.ornatelib.lang.SeptiLong;
+import net.mofusya.ornatelib.legacy.lang.SeptiLong;
 import net.mofusya.ornatelib.util.function.Modification;
 import org.jetbrains.annotations.NotNull;
 
