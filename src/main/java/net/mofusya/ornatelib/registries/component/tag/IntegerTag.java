@@ -8,11 +8,11 @@ public class IntegerTag extends Tags {
     }
 
     public int get(ItemStack itemStack) {
-        return itemStack.getOrCreateTag().getInt(MOD_ID + ":" + ID);
+        return itemStack.getOrCreateTag().getInt(modId + ":" + id);
     }
 
     public void set(ItemStack itemStack, int i) {
-        itemStack.getOrCreateTag().putInt(MOD_ID + ":" + ID, i);
+        itemStack.getOrCreateTag().putInt(modId + ":" + id, i);
     }
 
     public void set(ItemStack itemStack) {

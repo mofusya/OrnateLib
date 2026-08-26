@@ -1,4 +1,4 @@
-package net.mofusya.ornatelib.legacy.lang;
+package net.mofusya.ornatelib.lang;
 
 import com.electronwill.nightconfig.core.conversion.InvalidValueException;
 import org.jetbrains.annotations.NotNull;
@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.math.BigInteger;
 import java.util.List;
 
+@Deprecated(since = "1.20.1-alpha0.8a-forge")
 public final class SeptiLong {
 
     private static final long V0_MAX_VALUE = Long.MAX_VALUE;

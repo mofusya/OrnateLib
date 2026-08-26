@@ -8,11 +8,11 @@ public class BooleanTag extends Tags {
     }
 
     public boolean get(ItemStack itemStack) {
-        return itemStack.getOrCreateTag().getBoolean(MOD_ID + ":" + ID);
+        return itemStack.getOrCreateTag().getBoolean(modId + ":" + id);
     }
 
     public void set(ItemStack itemStack, boolean i) {
-        itemStack.getOrCreateTag().putBoolean(MOD_ID + ":" + ID, i);
+        itemStack.getOrCreateTag().putBoolean(modId + ":" + id, i);
     }
 
     public void trigger(ItemStack itemStack) {

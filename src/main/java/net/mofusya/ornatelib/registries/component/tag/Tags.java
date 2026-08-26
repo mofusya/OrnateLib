@@ -2,16 +2,16 @@ package net.mofusya.ornatelib.registries.component.tag;
 
 public class Tags {
 
-    public String MOD_ID;
+    public String modId;
 
-    public final String ID;
+    public final String id;
 
     public Tags(String id) {
-        ID = id;
+        this.id = id;
     }
 
     public <T extends Tags> T setMod(String modId, T instance) {
-        MOD_ID = modId;
+        this.modId = modId;
         return instance;
     }
 }

@@ -1,5 +1,6 @@
-package net.mofusya.ornatelib.legacy.lang;
+package net.mofusya.ornatelib.lang;
 
+@Deprecated(since = "1.20.1-alpha0.8a-forge")
 public enum SeptiLongValue {
     ZERO(new SeptiLong()),
     ONE(new SeptiLong(1L)),

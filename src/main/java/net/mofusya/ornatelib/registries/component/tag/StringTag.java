@@ -8,11 +8,11 @@ public class StringTag extends Tags {
     }
 
     public String get(ItemStack itemStack) {
-        return itemStack.getOrCreateTag().getString(MOD_ID + ":" + ID);
+        return itemStack.getOrCreateTag().getString(modId + ":" + id);
     }
 
     public void set(ItemStack itemStack, String i) {
-        itemStack.getOrCreateTag().putString(MOD_ID + ":" + ID, i);
+        itemStack.getOrCreateTag().putString(modId + ":" + id, i);
     }
 
     public void set(ItemStack itemStack) {

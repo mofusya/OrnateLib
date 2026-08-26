@@ -13,12 +13,12 @@ public class JsonTag extends Tags{
 
     @NotNull
     public JsonElement get(ItemStack itemStack) {
-        String jsonString = itemStack.getOrCreateTag().getString(MOD_ID + ":" + ID);
+        String jsonString = itemStack.getOrCreateTag().getString(modId + ":" + id);
         if (jsonString.isBlank()) return new JsonObject();
         return JsonParser.parseString(jsonString);
     }
 
     public void set(ItemStack itemStack, @NotNull JsonElement jsonElement) {
-        itemStack.getOrCreateTag().putString(MOD_ID + ":" + ID, jsonElement.toString());
+        itemStack.getOrCreateTag().putString(modId + ":" + id, jsonElement.toString());
     }
 }

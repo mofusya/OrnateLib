@@ -8,7 +8,7 @@ public class IntegerListTag extends Tags {
     }
 
     public int[] get(ItemStack itemStack) {
-        return itemStack.getOrCreateTag().getIntArray(MOD_ID + ":" + ID);
+        return itemStack.getOrCreateTag().getIntArray(modId + ":" + id);
     }
 
     public int get(ItemStack itemStack, int dic) {
@@ -21,11 +21,11 @@ public class IntegerListTag extends Tags {
         int[] list = get(itemStack);
 
         list[dic] = i;
-        itemStack.getOrCreateTag().putIntArray(MOD_ID + ":" + ID, list);
+        itemStack.getOrCreateTag().putIntArray(modId + ":" + id, list);
     }
 
     public void set(ItemStack itemStack, int[] list) {
-        itemStack.getOrCreateTag().putIntArray(MOD_ID + ":" + ID, list);
+        itemStack.getOrCreateTag().putIntArray(modId + ":" + id, list);
     }
 
     public void set(ItemStack itemStack, int dic) {

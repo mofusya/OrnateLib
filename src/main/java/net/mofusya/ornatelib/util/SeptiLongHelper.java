@@ -1,9 +1,10 @@
 package net.mofusya.ornatelib.util;
 
 import net.minecraft.nbt.CompoundTag;
-import net.mofusya.ornatelib.legacy.lang.SeptiLong;
-import net.mofusya.ornatelib.legacy.lang.SeptiLongValue;
+import net.mofusya.ornatelib.lang.SeptiLong;
+import net.mofusya.ornatelib.lang.SeptiLongValue;
 
+@Deprecated(since = "1.20.1-alpha0.8a-forge")
 public class SeptiLongHelper {
 
     public static CompoundTag serialiseNBT(String name, SeptiLong septiLong) {

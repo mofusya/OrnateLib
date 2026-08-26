@@ -8,11 +8,11 @@ public class FloatTag extends Tags {
     }
 
     public float get(ItemStack itemStack) {
-        return itemStack.getOrCreateTag().getFloat(MOD_ID + ":" + ID);
+        return itemStack.getOrCreateTag().getFloat(modId + ":" + id);
     }
 
     public void set(ItemStack itemStack, float i) {
-        itemStack.getOrCreateTag().putFloat(MOD_ID + ":" + ID, i);
+        itemStack.getOrCreateTag().putFloat(modId + ":" + id, i);
     }
 
     public void set(ItemStack itemStack) {
