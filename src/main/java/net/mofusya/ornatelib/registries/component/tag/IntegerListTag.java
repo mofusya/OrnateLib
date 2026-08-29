@@ -2,6 +2,7 @@ package net.mofusya.ornatelib.registries.component.tag;
 
 import net.minecraft.world.item.ItemStack;
 
+@Deprecated(since = "1.20.1-alpha0.9a-forge")
 public class IntegerListTag extends Tags {
     public IntegerListTag(String id) {
         super(id);

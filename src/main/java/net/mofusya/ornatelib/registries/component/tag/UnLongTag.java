@@ -6,6 +6,7 @@ import net.mofusya.ornatelib.lang.UnLong;
 import java.util.Arrays;
 import java.util.function.Function;
 
+@Deprecated(since = "1.20.1-alpha0.9a-forge")
 public class UnLongTag extends Tags {
     public UnLongTag(String id) {
         super(id);

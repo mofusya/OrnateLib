@@ -17,6 +17,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+@Deprecated(since = "1.20.1-alpha0.9a-forge")
 public class OrnateBlockDeferredRegister {
 
     private final ArrayList<DeferredRegister<Block>> blockRegisters = new ArrayList<>();

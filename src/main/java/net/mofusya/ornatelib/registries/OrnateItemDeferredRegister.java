@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+@Deprecated(since = "1.20.1-alpha0.9a-forge")
 public class OrnateItemDeferredRegister {
 
     private final ArrayList<DeferredRegister<Item>> itemRegisters = new ArrayList<>();

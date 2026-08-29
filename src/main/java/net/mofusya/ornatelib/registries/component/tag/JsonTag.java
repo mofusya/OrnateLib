@@ -6,6 +6,7 @@ import com.google.gson.JsonParser;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+@Deprecated(since = "1.20.1-alpha0.9a-forge")
 public class JsonTag extends Tags{
     public JsonTag(String id) {
         super(id);

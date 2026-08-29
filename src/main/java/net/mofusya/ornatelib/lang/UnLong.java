@@ -94,6 +94,11 @@ public final class UnLong extends Number implements Comparable<UnLong>, Iterable
         this.multi(multiplier);
     }
 
+    public void setTo(@NotNull Long l) {
+        this.setTo(new UnLong(l));
+    }
+
+
     public void setTo(@NotNull UnLong unLong) {
         //Replace this values to unLong values.
         this.forEachI((value, index) -> {
@@ -867,15 +872,15 @@ public final class UnLong extends Number implements Comparable<UnLong>, Iterable
         AtomicInteger resultSuffix = new AtomicInteger(-1);
         boolean broken = this.forEachI((value, index) -> {
             if (value / 1_000_000 >= 1) {
-                resultNum.set(value / 1_000);
+                resultNum.set(value / 1_000_000);
                 if (suffix) resultSuffix.set(index * 3 + 1);
                 return true;
             } else if (value / 1_000 >= 1) {
-                resultNum.set(value);
+                resultNum.set(value / 1_000);
                 if (suffix) resultSuffix.set(index * 3);
                 return true;
             } else if (value >= 1) {
-                resultNum.set(value * 1000 + this.getValue(index - 1) / 1_000_000);
+                resultNum.set(this.getValue(index - 1) / 1_000_000);
                 if (suffix) resultSuffix.set(index * 3 - 1);
                 return true;
             }
@@ -1234,9 +1239,5 @@ public final class UnLong extends Number implements Comparable<UnLong>, Iterable
             cValues.add(0L);
         }
         return new UnLong(cValues);
-    }
-
-    private static String toString(Long l) {
-        return l.toString();
     }
 }

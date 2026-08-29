@@ -1,5 +1,6 @@
 package net.mofusya.ornatelib.registries.component.tag;
 
+@Deprecated(since = "1.20.1-alpha0.9a-forge")
 public class Tags {
 
     public String modId;
