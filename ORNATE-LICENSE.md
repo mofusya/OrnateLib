@@ -8,8 +8,8 @@
 - Send Pull Requests to this repository. (See ***When contributing***)
 
 #### What you CANNOT do
-- Give any resource on this project, to any type of AI in any purposes.  
-- Claim that any resource is yours,
+- Give any resource on this project, to any type of AI of any purposes.  
+- Claim ownership in full or in part.
 - Copy all or large parts of the resources.  
 - Redistribute any of this project.
 
