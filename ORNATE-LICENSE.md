@@ -9,8 +9,8 @@
 
 #### What you CANNOT do
 - Give any resource on this project, to any type of AI of any purposes.  
-- Claim ownership in full or in part.
-- Copy all or large parts of the resources.  
+- Claim ownership in full or in any part.
+- Copy all or large parts of the resource.  
 - Redistribute any of this project.
 
 #### What you HAVE TO do
