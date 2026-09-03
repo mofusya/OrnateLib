@@ -50,6 +50,24 @@ public final class UnLong extends Number implements Comparable<UnLong>, Iterable
         }
     }
 
+    public UnLong(@NotNull Integer... values) {
+        this(convertIntegersToLong(values));
+    }
+
+    public static List<Long> convertIntegersToLong(Integer... values){
+        List<Long> modValues = new ArrayList<>();
+        for (int i = 0; i < values.length; i++) {
+            if (i == 0) {
+                modValues.add(Math.min(values[i], LAYER_MAX_VALUE));
+                continue;
+            }
+
+            modValues.set(i - 1, values[i] / LAYER_MAX_VALUE);
+            modValues.add(values[i] % LAYER_MAX_VALUE);
+        }
+        return modValues;
+    }
+
     public UnLong(@NotNull Number... values) {
         this(Arrays.stream(values).map(Number::longValue).toList());
     }
@@ -861,7 +879,7 @@ public final class UnLong extends Number implements Comparable<UnLong>, Iterable
         return addComma(builder.toString());
     }
 
-    private static final List<String> SUFFIXES = suffixes();
+    public static final List<String> SUFFIXES = suffixes();
 
     //Returns the MutableComponent converted this. (With or without the suffix)
     public MutableComponent toComponent(boolean suffix, boolean shortType) {
@@ -869,26 +887,36 @@ public final class UnLong extends Number implements Comparable<UnLong>, Iterable
         if (this.isSmallerOrSameAs(UnLong.billion())) return Component.literal(this.toString());
 
         AtomicLong resultNum = new AtomicLong();
+        AtomicLong resultFraction = new AtomicLong();
         AtomicInteger resultSuffix = new AtomicInteger(-1);
         boolean broken = this.forEachI((value, index) -> {
             if (value / 1_000_000 >= 1) {
                 resultNum.set(value / 1_000_000);
-                if (suffix) resultSuffix.set(index * 3 + 1);
+                resultFraction.set(value % 1_000_000 / 10_000);
+                if (suffix) resultSuffix.set(index * 3 + 2);
                 return true;
             } else if (value / 1_000 >= 1) {
                 resultNum.set(value / 1_000);
-                if (suffix) resultSuffix.set(index * 3);
+                resultFraction.set(value % 1_000 / 10);
+                if (suffix) resultSuffix.set(index * 3 + 1);
                 return true;
             } else if (value >= 1) {
-                resultNum.set(this.getValue(index - 1) / 1_000_000);
-                if (suffix) resultSuffix.set(index * 3 - 1);
+                resultNum.set(value);
+                resultFraction.set(this.getValue(index - 1) / 10_000_000);
+                if (suffix) resultSuffix.set(index * 3);
                 return true;
             }
             return false;
         }, true);
         if (!broken) return Component.literal(this.toString());
 
-        return Component.literal(addComma(resultNum.toString())).append(Component.translatable("number.ornatelib." + SUFFIXES.get(resultSuffix.get()) + (shortType ? ".short" : "")));
+        return Component.literal(addComma(resultNum.toString()) + "." + addFractionExtraZero(resultFraction.get())).append(Component.translatable("number.ornatelib." + SUFFIXES.get(resultSuffix.get()) + (shortType ? ".short" : "")));
+    }
+
+    private static String addFractionExtraZero(long fraction){
+        if (fraction == 0) return "0";
+        if (fraction < 10) return "0" + fraction;
+        return String.valueOf(fraction);
     }
 
     private static ArrayList<String> suffixes() {
