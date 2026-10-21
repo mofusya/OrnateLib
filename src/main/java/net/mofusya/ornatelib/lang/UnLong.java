@@ -54,7 +54,7 @@ public final class UnLong extends Number implements Comparable<UnLong>, Iterable
         this(convertIntegersToLong(values));
     }
 
-    public static List<Long> convertIntegersToLong(Integer... values){
+    public static List<Long> convertIntegersToLong(Integer... values) {
         List<Long> modValues = new ArrayList<>();
         for (int i = 0; i < values.length; i++) {
             if (i == 0) {
@@ -530,34 +530,70 @@ public final class UnLong extends Number implements Comparable<UnLong>, Iterable
     }
 
     public Float simulateDivAndGetFloat(@NotNull UnLong div) {
-        //Represent this with a Float, fSelf.
-        AtomicReference<Float> fSelf = new AtomicReference<>(0f);
-        //Add all values from this to fSelf.
+        /*
+        if (div.isZero()) return Float.POSITIVE_INFINITY;
+
+        AtomicInteger largestIndex = new AtomicInteger();
         this.forEachI((value, index) -> {
-            //If the value in this index is zero, add nothing.
-            if (value == 0) return;
+            if (value > 0 && largestIndex.get() < index) {
+                largestIndex.set(index);
+                return true;
+            }
+            return false;
+        }, true);
 
-            //Get the multiplier for this index.
-            float multiplier = getMultiplierFloatFromIndex(index);
-            //Add this index's value to fSelf.
-            fSelf.set(fSelf.get() + (value * multiplier));
-        });
-
-        //Represent div with a Float, fDiv.
-        AtomicReference<Float> fDiv = new AtomicReference<>(0f);
-        //Add all values from div to fDiv.
         div.forEachI((value, index) -> {
-            //If the value in this index is zero, add nothing.
-            if (value == 0) return;
+            if (value > 0 && largestIndex.get() < index) {
+                largestIndex.set(index);
+                return true;
+            }
+            return false;
+        }, true);
 
-            //Get the multiplier for this index.
-            float multiplier = getMultiplierFloatFromIndex(index);
-            //Add this index's value to bigSelf.
-            fDiv.set(fDiv.get() + (value * multiplier));
-        });
+        float floatingSelf = (float) this.getValue(largestIndex.get()) * (float) UnLong.LAYER_MAX_VALUE_PLUS_ONE;
+        if (largestIndex.get() - 1 >= 0) {
+            floatingSelf += (float) this.getValue(largestIndex.get() - 1) * (float) UnLong.LAYER_MAX_VALUE_PLUS_ONE;
+        }
 
-        //Get the divided result in Float and return the result.
-        return fSelf.get() / fDiv.get();
+        float floatingDiv = (float) div.getValue(largestIndex.get()) * (float) UnLong.LAYER_MAX_VALUE_PLUS_ONE;
+        if (largestIndex.get() - 1 >= 0) {
+            floatingDiv += (float) div.getValue(largestIndex.get() - 1) * (float) UnLong.LAYER_MAX_VALUE_PLUS_ONE;
+        }
+        if (floatingDiv <= 0f) return floatingDiv = 1f;
+
+        return floatingSelf / floatingDiv;
+         */
+        if (div.isZero()) return Float.POSITIVE_INFINITY;
+
+        AtomicInteger largestIndex = new AtomicInteger();
+        this.forEachI((value, index) -> {
+            if (value > 0 && largestIndex.get() < index) {
+                largestIndex.set(index);
+                return true;
+            }
+            return false;
+        }, true);
+
+        div.forEachI((value, index) -> {
+            if (value > 0 && largestIndex.get() < index) {
+                largestIndex.set(index);
+                return true;
+            }
+            return false;
+        }, true);
+
+        float floatingSelf = (float) this.getValue(largestIndex.get()) * (float) LAYER_MAX_VALUE_PLUS_ONE;
+        if (largestIndex.get() - 1 >= 0) {
+            floatingSelf += (float) this.getValue(largestIndex.get() - 1);
+        }
+
+        float floatingDiv = (float) div.getValue(largestIndex.get()) * (float) LAYER_MAX_VALUE_PLUS_ONE;
+        if (largestIndex.get() - 1 >= 0) {
+            floatingDiv += (float) div.getValue(largestIndex.get() - 1);
+        }
+        if (floatingDiv <= 0f) return floatingDiv = 1f;
+
+        return floatingSelf / floatingDiv;
     }
 
     private static @NotNull UnLong getDivResultByUnLong(BigInteger bigResult) {
@@ -578,7 +614,7 @@ public final class UnLong extends Number implements Comparable<UnLong>, Iterable
         return result;
     }
 
-    private boolean isZero() {
+    public boolean isZero() {
         return this.equals(zero());
     }
 
@@ -731,7 +767,7 @@ public final class UnLong extends Number implements Comparable<UnLong>, Iterable
         if (index == 0) return 1f;
 
         //Initialize the multiplier.
-        float multiplier = (float) UnLong.LAYER_MAX_VALUE_PLUS_ONE;
+        float multiplier = (float) 1f;
         //Power the multiplier for index times.
         for (int i = 0; i < index; i++) {
             //Multiply the multiplier by UnLong's max layer value.
@@ -913,7 +949,7 @@ public final class UnLong extends Number implements Comparable<UnLong>, Iterable
         return Component.literal(addComma(resultNum.toString()) + "." + addFractionExtraZero(resultFraction.get())).append(Component.translatable("number.ornatelib." + SUFFIXES.get(resultSuffix.get()) + (shortType ? ".short" : "")));
     }
 
-    private static String addFractionExtraZero(long fraction){
+    private static String addFractionExtraZero(long fraction) {
         if (fraction == 0) return "0";
         if (fraction < 10) return "0" + fraction;
         return String.valueOf(fraction);

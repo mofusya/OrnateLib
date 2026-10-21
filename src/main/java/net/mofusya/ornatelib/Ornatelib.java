@@ -2,6 +2,7 @@ package net.mofusya.ornatelib;
 
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.fml.common.Mod;
+import net.mofusya.ornatelib.lang.UnLong;
 import org.slf4j.Logger;
 
 @Mod(Ornatelib.MOD_ID)
