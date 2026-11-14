@@ -12,30 +12,31 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 @EverythingAreNonNullByDefault
 public class OrnateRegister<T> {
-    private static final Logger LOGGER = LogUtils.getLogger();
+    protected static final Logger LOGGER = LogUtils.getLogger();
 
     private final String modId;
     private final List<Map<ResourceLocation, OrnateHolder<T>>> values;
-    private final RegistryConsumer<T> registry;
+    private final RegistryRegister<T> registry;
     private boolean locked = false;
 
-    public OrnateRegister(RegistryConsumer<T> registry) {
+    public OrnateRegister(RegistryRegister<T> registry) {
         this(registry, 1);
     }
 
-    public OrnateRegister(RegistryConsumer<T> registry, @Range(from = 1, to = Integer.MAX_VALUE) int slotCount) {
+    public OrnateRegister(RegistryRegister<T> registry, @Range(from = 1, to = Integer.MAX_VALUE) int slotCount) {
         this(null, registry, slotCount);
     }
 
-    public OrnateRegister(@Nullable String modId, RegistryConsumer<T> registry) {
+    public OrnateRegister(@Nullable String modId, RegistryRegister<T> registry) {
         this(modId, registry, 1);
     }
 
-    public OrnateRegister(@Nullable String modId, RegistryConsumer<T> registry, @Range(from = 1, to = Integer.MAX_VALUE) int slotCount) {
+    public OrnateRegister(@Nullable String modId, RegistryRegister<T> registry, @Range(from = 1, to = Integer.MAX_VALUE) int slotCount) {
         this.modId = modId == null ? Ornatelib.MOD_ID : modId;
         this.values = new ArrayList<>();
         for (int i = 0; i < slotCount; i++) {
@@ -44,19 +45,19 @@ public class OrnateRegister<T> {
         this.registry = registry;
     }
 
-    public OrnateHolder<T> register(String id, Supplier<T> value) {
+    public OrnateHolder<T> register(String id, Function<ResourceLocation, T> value) {
         return register(id, value, 0);
     }
 
-    public OrnateHolder<T> register(String id, Supplier<T> value, @Range(from = 0, to = Integer.MAX_VALUE) int slot) {
+    public OrnateHolder<T> register(String id, Function<ResourceLocation, T> value, @Range(from = 0, to = Integer.MAX_VALUE) int slot) {
         return register(new ResourceLocation(this.getModId(), id), value, slot);
     }
 
-    public OrnateHolder<T> register(ResourceLocation id, Supplier<T> value) {
+    public OrnateHolder<T> register(ResourceLocation id, Function<ResourceLocation, T> value) {
         return register(id, value, 0);
     }
 
-    public OrnateHolder<T> register(ResourceLocation id, Supplier<T> value, @Range(from = 0, to = Integer.MAX_VALUE) int slot) {
+    public OrnateHolder<T> register(ResourceLocation id, Function<ResourceLocation, T> value, @Range(from = 0, to = Integer.MAX_VALUE) int slot) {
         if (this.isLocked()) throw new RuntimeException("The registry is locked.");
 
         var holder = new OrnateHolder<>(id, value);
@@ -64,37 +65,37 @@ public class OrnateRegister<T> {
         return holder;
     }
 
-    public void register() {
+    public final void register() {
         this.lock();
-        this.values.forEach(this.getRegistry()::register);
+        this.getRegistry().register(this);
     }
 
-    public String getModId() {
+    public final String getModId() {
         return modId;
     }
 
-    public Map<ResourceLocation, OrnateHolder<T>> getEntries(int slot) {
+    public final Map<ResourceLocation, OrnateHolder<T>> getEntries(int slot) {
         return Map.copyOf(this.getEntries().get(slot));
     }
 
-    public List<Map<ResourceLocation, OrnateHolder<T>>> getEntries() {
+    public final List<Map<ResourceLocation, OrnateHolder<T>>> getEntries() {
         return new ArrayList<>(this.values);
     }
 
-    private RegistryConsumer<T> getRegistry() {
+    private RegistryRegister<T> getRegistry() {
         return registry;
     }
 
-    public boolean isLocked() {
+    public final boolean isLocked() {
         return locked;
     }
 
-    public void lock() {
+    public final void lock() {
         this.locked = true;
     }
 
     @FunctionalInterface
-    public interface RegistryConsumer<T> {
-        void register(Map<ResourceLocation, OrnateHolder<T>> registry);
+    public interface RegistryRegister<T> {
+        void register(OrnateRegister<T> registry);
     }
 }
